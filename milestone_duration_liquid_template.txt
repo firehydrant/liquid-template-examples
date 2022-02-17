@@ -1,0 +1,5 @@
+{% for milestone in incident.milestones %}
+  Type: {{ milestone.type }}
+  Duration: {{ milestone.duration }}
+  ####################
+{% endfor %}

@@ -1,0 +1,23 @@
+{{% comment %}}
+A runbook step to communicate with a responders home team channel to let them know where their responding engineer has gone.  
+{{% endcomment %}}
+*Team X has been engaged in {{incident.name}}-{{ incident.severity}}-milestone:{{incident.current_milestone}}*
+
+_Triage is taking place <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
+
+{{% comment %}}
+Note, for the service and functionality objects the only two attributes available via the incident object are id and name.
+{{% endcomment %}}
+*Impacted Services*
+{% for service in incident.services -%}
+  :fire: <https://app.firehydrant.io/services/{{service.id}}|{{ service.name }}>
+  {% else -%}
+  _No Services have been added yet ( use `/fh add impact` to add a service )_
+{% endfor -%}
+
+*Impacted Functionalities*
+{% for functionality in incident.functionalities -%}
+  :fire: <https://app.firehydrant.io/functionalities{{functionality.id}}|{{ functionality.name }}
+{% else -%}
+  _No Functionalities have been added yet_ ( use `/fh add impact` to add a functionality)
+{% endfor %}

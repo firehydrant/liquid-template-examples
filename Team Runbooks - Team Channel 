@@ -1,12 +1,20 @@
 {{% comment %}}
-A runbook step to communicate with a responders home team channel to let them know where their responding engineer has gone.  
-{{% endcomment %}}
-*Team X has been engaged in {{incident.name}}-{{ incident.severity}}-milestone:{{incident.current_milestone}}*
+Description: A runbook step to communicate with a responders home team channel letting them know where their responding engineer has gone.
 
-_Triage is taking place <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
+Runbook Step: This copy pairs well the a 'Notify channel with a custom message'[0] where the slack channel is your team's prefered channel.
+
+Conditions to trigger: Manual, to avoid excessive noise in your home team slack channel.
+
+Note: This is a mixture of mrkdwn and liquid formatting and is optimized for use in a slack message.
+
+[0]https://firehydrant.zendesk.com/hc/en-us/articles/360058202811-Notify-Incident-Channel-With-Custom-Message
+{{% endcomment %}}
+*Team X has been engaged in {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}*
+
+_Triage is taking place here: <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
 
 {{% comment %}}
-Note, for the service and functionality objects the only two attributes available via the incident object are id and name.
+Note, for the service and functionality objects, the only two attributes available via the incident object are `id` and `name.`
 {{% endcomment %}}
 *Impacted Services*
 {% for service in incident.services -%}

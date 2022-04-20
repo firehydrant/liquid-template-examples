@@ -1,0 +1,23 @@
+### Tags
+
+| Tags | 
+|-----------|
+{%- for tag in incident.tag_list %}
+| {{ tag }} | 
+{%- endfor %}
+
+### Labels
+
+| Key | Value|
+|------|------|
+{%- for label in incident.labels %}
+| {{ label[0] }} | {{ label[1] }} |
+{%- endfor %}
+
+### Jira
+
+| Ticket Name | Link|
+|------|------|
+{%- for ticket in incident.incident_tickets[0].attachments %}
+| {{ ticket.display_text }} | {{ ticket.href_url }} |
+{%- endfor %}

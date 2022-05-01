@@ -3,31 +3,93 @@ Description: Sample  notification copy for an incident. Target these messages to
 
 Runbook Step: This copy pairs well the a 'Notify channel with a custom message' or 'Notify incident channel with a custom message', depending upon the use case. 
 
-Conditions to Trigger: 'Current Milestone is n' or any 'Time since' type trigger.	
+Conditions to Trigger: 'Current Milestone is n' or any 'Time since' type triggers would be best.	
+
+Note: This is written in mrkdwn (slack markdown formatting) and is optimized for use in a slack messages.
 {% endcomment %}
 
-Standard name/sev/milestone: {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}
+# During an Incident
+## Responder Communication Reminder Notification, proactive - Recommendation: every 25 minutes for severe incidents. This could be set as a 'reactive' message by checking a 'time since last update' condition  << Todo if such a field exists.
+    {{incident.name}}-{{ incident.severity}} in milestone ({{incident.current_milestone}}) has been running for [duration].
+        {% comment %}
+        Todo:
+        Check out how this 'role_assignments' array of objects works below. It seems like the user object must be nested in the incident role, but maybe not? 
 
-Draft: {{incident.name}} in milestone:{{incident.current_milestone}} has been running for [working on duration]...
+        The ideal would be to say something like '<role title> - @<responder slack name>'
+        {% endcomment %}
+    * @{{ incident.role_assignments[0].incident_role.user.name }} Please post an update in the _next 10 minutes_ using ```/fh update``` to the incident status page.*
+    {{incident.severity}} incidents require an update to our internal status page every 30 minutes until the 'mititgated' milestone is reached.
+    <https://placeholder_incident_docs| See our standards for communication for {{incident.severity}} incidents for details and templates.>
+
+        {% comment %}
+        Todo:
+        *Figure out time duration
+        * Todo Question: Can we return details of a runbook step? For example, could we make visible the 'repeats' time value.
+        * What is the mrkdwn syntax for an incline code block, update the /fh commands above ^^
+        * Consider creating a custom fh command to return a 'template' of an update that a responder could copy paste. 
+        {% endcomment %}
+
+## Stakeholder Organization Notification (Support or leadership)- recomendation: Every hour, could also be leveraged via an email step.
+
+    Reminder: {{incident.name}}-{{ incident.severity}} in milestone ({{incident.current_milestone}}) has been running for [duration]. 
+    
+    See the <{{incident.private_status_page_url}}|incident status page> for the latest updates on impact.
+    Initial Impact: {{incident.customer_impact_summary}}
+    Latest update: {{incident.last_note.created_at | date: "%Y-%m-%d %H:%M" }} - {{incident.last_note.body}}
+
+# After an Incident
+
+## Retrospective reminder - sent to incident channel
+    
+    @incident_commander - it's been x hours since the incident was resolved. Please scheudle a retrospective using the following <guide-link></guide-link>
+
+    OR
+
+    @incident_commander - it's been x hours since the incident was resolved. Please scheudle a retrospective following the <retrospective check list>
+
+
+## Archive Reminder - sent to incident channel
+    
+    This channel will be archived in 24 hours. @<incident commander> are there any additional tasks required before this happens? See <task list link>? 
+
+    {%- comment -%}
+    * todo Question: Do we have access to task lists in template variables? Can we assign tasks lists via runbook steps? (see above step for use case).
+    {%- endcomment -%}}
+
+## RCA reminder - sent after retrospective complete to the main incident channel, product operations/corporate commuincations/legal team channels. 
+
+    Incident {{incident.name}}-{{ incident.severity}}'s has completed it's post incident review. See <correct FH URL, i'd guess?>/{{incident.report_id}} << todo
+
+    Note: For {{incident.severity}} our <https://link-to-SLA-source-of-truth | SLA> is 48 hours.
+
+
+####################
+# Eratta
 
 *Variable test*
-{% assign variable_test = "I am a variable evaluating: {{incident.name}}!" %}
+Figure out if for more complicated collections of strings should be composed in a variable and passed in?
+
+{% assign variable_test = 'I am a variable evaluating: {{incident.name}}!' %}
 
 This is the variable test: {{variable_test}}
 
 *Date Format Play*
-{{incident.created_at | date: "%Y-%m-%d %H:%M"}} {{"now" | date: "%Y-%m-%d %H:%M" }}
+Created at: {{incident.created_at | date: "%Y-%m-%d %H:%M"}}
+Now: {{"now" | date: "%Y-%m-%d %H:%M" }}
 
-Long: {{ incident.created_at | date: format: 'long' }}
-Short: {{ incident.created_at | date: format: 'short' }}
-Default: {{ incident.created_at | date: format: 'default' }}
-
+:arrow_down I don't think any of these 'format' attribuetes work (or they didn't without a comma?)
+Long: {{ incident.created_at | date: , format: 'long' }}
+Short: {{ incident.created_at | date: , format: 'short' }}
+Default: {{ incident.created_at | date: , format: 'default' }}
 
 *If elsif else experiment*
 {% if incident.duration }
 This shouldn't render. (if)
 {% elsif %}
-This may render (elsif)
+This probably won't render without a value in the elsif (elsif)
 {% else %}
 I'd be shocked if this didn't render (else)
 {% endif %}
+
+Documentation on Liquid DateTime: 
+Tool for fomatting datetimes: http://www.strfti.me/

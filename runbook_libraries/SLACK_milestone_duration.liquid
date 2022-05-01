@@ -1,0 +1,13 @@
+{% comment %}
+Description:  Return all milestones with type and duration for a given incident. Useful for discussion during retrospectives.
+
+Runbook Step: 'Notify incident channel with a custom message' or 'Notify channel with a custom message.'
+
+Conditions to trigger: 'Current Milestone is Resolved'
+{% endcomment %}
+
+{% for milestone in incident.milestones %}
+  Type: {{ milestone.type }}
+  Duration: {{ milestone.duration }}
+  ####################
+{% endfor %}

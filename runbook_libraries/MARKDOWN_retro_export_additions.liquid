@@ -1,0 +1,33 @@
+{% comment %}
+Description: A runbook step to return all tabs, labels and assoicated jira tickets.
+
+Runbook step: These steps can be added to the default copy of the 'Export Retrospective to Confluence' or 'Export Retrospective to Google Docs.'
+
+Conditions to trigger: 'Current Milestone is Resolved'
+
+Note: This step uses standard markdown and could be used in any markdown compatable step including the Confluence and Google Docs retrospective exports.
+{% endcomment %}
+
+### Tags
+
+| Tags | 
+|-----------|
+{%- for tag in incident.tag_list %}
+| {{ tag }} | 
+{%- endfor %}
+
+### Labels
+
+| Key | Value|
+|------|------|
+{%- for label in incident.labels %}
+| {{ label[0] }} | {{ label[1] }} |
+{%- endfor %}
+
+### Jira
+
+| Ticket Name | Link|
+|------|------|
+{%- for ticket in incident.incident_tickets[0].attachments %}
+| {{ ticket.display_text }} | {{ ticket.href_url }} |
+{%- endfor %}

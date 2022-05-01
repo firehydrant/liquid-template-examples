@@ -9,6 +9,7 @@ Note: This is written in mrkdwn (slack markdown formatting) and is optimized for
 
 [0]https://firehydrant.zendesk.com/hc/en-us/articles/360058202811-Notify-Incident-Channel-With-Custom-Message
 {% endcomment %}
+
 *Team X has been engaged in {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}*
 
 _Triage is taking place here: <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
@@ -29,3 +30,6 @@ Note, for the service and functionality objects, the only two attributes availab
 {% else -%}
   _No Functionalities have been added yet_ ( use `/fh add impact` to add a functionality)
 {% endfor %}
+
+
+# todo: Add a 'team calling card' step, for sharing basic team informatoin with the broader incident channel.

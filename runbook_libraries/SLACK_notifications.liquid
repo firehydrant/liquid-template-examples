@@ -1,0 +1,33 @@
+{% comment %}
+Description: Sample  notification copy for an incident. Target these messages to be sent at the ideal time and channel that responders or stakeholders may need to see them.
+
+Runbook Step: This copy pairs well the a 'Notify channel with a custom message' or 'Notify incident channel with a custom message', depending upon the use case. 
+
+Conditions to Trigger: 'Current Milestone is n' or any 'Time since' type trigger.	
+{% endcomment %}
+
+Standard name/sev/milestone: {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}
+
+Draft: {{incident.name}} in milestone:{{incident.current_milestone}} has been running for [working on duration]...
+
+*Variable test*
+{% assign variable_test = "I am a variable evaluating: {{incident.name}}!" %}
+
+This is the variable test: {{variable_test}}
+
+*Date Format Play*
+{{incident.created_at | date: "%Y-%m-%d %H:%M"}} {{"now" | date: "%Y-%m-%d %H:%M" }}
+
+Long: {{ incident.created_at | date: format: 'long' }}
+Short: {{ incident.created_at | date: format: 'short' }}
+Default: {{ incident.created_at | date: format: 'default' }}
+
+
+*If elsif else experiment*
+{% if incident.duration }
+This shouldn't render. (if)
+{% elsif %}
+This may render (elsif)
+{% else %}
+I'd be shocked if this didn't render (else)
+{% endif %}

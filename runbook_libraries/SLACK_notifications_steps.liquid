@@ -13,14 +13,14 @@ Note: This is written in mrkdwn (slack markdown formatting) and is optimized for
     {{incident.name}}-{{ incident.severity}} in milestone ({{incident.current_milestone}}) has been running for [duration].
         {% comment %}
         Todo:
-        Check out how this 'role_assignments' array of objects works below. It seems like the user object must be nested in the incident role, but maybe not? 
-
         The ideal would be to say something like '<role title> - @<responder slack name>'
         {% endcomment %}
-    * @{{ incident.role_assignments[0].incident_role.user.name }} Please post an update in the _next 10 minutes_ using ```/fh update``` to the incident status page.*
+    * @{{ incident.role_assignments[0].user.name }} Please post an update in the _next 10 minutes_ using ```/fh update``` to the incident status page.*
     {{incident.severity}} incidents require an update to our internal status page every 30 minutes until the 'mititgated' milestone is reached.
     <https://placeholder_incident_docs| See our standards for communication for {{incident.severity}} incidents for details and templates.>
-
+    {{ incident.role_assignments[0].incident_role.name }}
+    {{ incident.role_assignments[0].incident_role.summary }}
+    {{ incident.role_assignments[0].incident_role.tasks }}
         {% comment %}
         Todo:
         *Figure out time duration
@@ -58,7 +58,7 @@ Note: This is written in mrkdwn (slack markdown formatting) and is optimized for
 
 ## RCA reminder - sent after retrospective complete to the main incident channel, product operations/corporate commuincations/legal team channels. 
 
-    Incident {{incident.name}}-{{ incident.severity}}'s has completed it's post incident review. See <correct FH URL, i'd guess?>/{{incident.report_id}} << todo
+    Incident {{incident.name}}-{{ incident.severity}}'s has completed it's post incident review. See <correct FH URL, i'd guess?>/{{incident.report_id}} << 
 
     Note: For {{incident.severity}} our <https://link-to-SLA-source-of-truth | SLA> is 48 hours.
 

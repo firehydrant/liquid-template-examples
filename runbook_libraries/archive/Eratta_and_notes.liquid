@@ -1,0 +1,29 @@
+# Eratta
+
+*Variable test*
+Figure out if for more complicated collections of strings should be composed in a variable and passed in?
+
+{% assign variable_test = 'I am a variable evaluating: {{incident.name}}!' %}
+
+This is the variable test: {{variable_test}}
+
+*Date Format Play*
+Created at: {{incident.created_at | date: "%Y-%m-%d %H:%M"}}
+Now: {{"now" | date: "%Y-%m-%d %H:%M" }}
+
+:arrow_down I don't think any of these 'format' attribuetes work (or they didn't without a comma?)
+Long: {{ incident.created_at | date: , format: 'long' }}
+Short: {{ incident.created_at | date: , format: 'short' }}
+Default: {{ incident.created_at | date: , format: 'default' }}
+
+*If elsif else experiment*
+{% if incident.duration }
+This shouldn't render. (if)
+{% elsif %}
+This probably won't render without a value in the elsif (elsif)
+{% else %}
+I'd be shocked if this didn't render (else)
+{% endif %}
+
+Documentation on Liquid DateTime: 
+Tool for fomatting datetimes: http://www.strfti.me/

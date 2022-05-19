@@ -2,7 +2,7 @@
 Example runbook steps built using liquid templating to kickstart runbook build out and provide inspiration for customizaiton possbilities.
 
 _Note:
-These examples are esigned to be copy pasted into runbook steps but also contain comments to help steer users towards an intented use case. Feel free to delete any text in {% comment %}{% endcomment %} blocks._
+These examples are designed to be copy pasted into runbook steps but also contain comments to help steer users towards an intented use case. Feel free to delete any text in {% comment %}{% endcomment %} blocks._
 
 
 ## Useful Resources

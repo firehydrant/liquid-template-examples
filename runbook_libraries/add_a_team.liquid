@@ -1,0 +1,59 @@
+{% comment %}
+Description: Runbook steps to communicate that a team has been engaged.
+
+Runbook Step: This copy pairs well the a 'Notify channel with a custom message'[0] where the slack channel is your team's prefered channel.
+
+Conditions to trigger: Manual, to avoid excessive noise in your home team slack channel.
+
+Note: This is written in mrkdwn (slack markdown formatting) and is optimized for use in a slack messages.
+
+[0]https://firehydrant.zendesk.com/hc/en-us/articles/360058202811-Notify-Incident-Channel-With-Custom-Message
+{% endcomment %}
+
+# Call Home - Notification that a responder team has been engaged to be sent to that responders 'home team' channel
+
+*Team X has been engaged in {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}*
+
+_Triage is taking place here: <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
+
+{% comment %}
+Note, for the service and functionality objects, the only two attributes available via the incident object are `id` and `name.`
+{% endcomment %}
+*Impacted Services*
+{% for service in incident.services -%}
+  :fire: <https://app.firehydrant.io/services/{{service.id}}|{{ service.name }}>
+  {% else -%}
+  _No Services have been added yet ( use `/fh add impact` to add a service )_
+{% endfor -%}
+
+*Impacted Functionalities*
+{% for functionality in incident.functionalities -%}
+  :fire: <https://app.firehydrant.io/functionalities{{functionality.id}}|{{ functionality.name }}>
+{% else -%}
+  _No Functionalities have been added yet_ ( use `/fh add impact` to add a functionality)
+{% endfor %}
+
+# Team Status update - Notify 'home team' channel with an update on incident status. << todo test from here down, this already lives in my test instance in 'Team X Runbok'
+
+:alert: Reminder - {{incident.name}} - {{incident.severity}} at milestone {{incident. current_milestone}} has been ongoing for {{ "now" | minus: incident.created_at}}
+
+Please check in with your escalation engineer to see if they need any additional support or to rotate out.
+
+# Team Calling card - Notification to the incident channel describing the team, escalation paths, and setting expectations for engagement
+
+todo - the direct @'s will require formatting and services can be dynamically generated
+:boom: *Team x has been engaged in this incident* :boom:
+
+If you have not received acknowledgment in *10 minutes*, please run the following command to page the on-call escalation team-member.
+ `/fh page service` and `@here` in #team-x channel
+
+> Tech Lead: @JaneSmith
+> Manager: @JoeBlow
+> Director: @GraceHopper
+
+ This team is responsible for the following services:
+* x - www.run-book-link-x.com
+* y - www.run-book-link-y.com
+* z - www.run-book-link-z.com
+
+Service Dependencies can be found <https://app.firehydrant.io/services/8e28951c-86df-4104-ad4d-ad2980fb059f/incidents | here>.

@@ -1,9 +1,17 @@
+{% comment %}
+Description: Additional variables available, formatted in markdown tables, useful during retrospectives.
+
+Runbook Step:'Export Retrospective to Confluence' or 'Export Retrospective to Google Docs'
+
+Conditions to trigger: n/a
+{% endcomment %}
+
 ### Tags
 
-| Tags | 
+| Tags |
 |-----------|
 {%- for tag in incident.tag_list %}
-| {{ tag }} | 
+| {{ tag }} |
 {%- endfor %}
 
 ### Labels

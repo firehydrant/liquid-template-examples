@@ -1,8 +1,0 @@
-{% for milestone in incident.milestones %}
-  Type: {{ milestone.type }}
-  Duration: {{ milestone.duration }}
-  ####################
-{% endfor %}
-
-
-##Use in the Runbook step "Notify incident channel with a custom message" with the rule "Current Milestone is Resolved". This will iterate through and display all milestones, with durations, to your incident slack channel to help better visual response times.

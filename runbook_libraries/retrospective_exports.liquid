@@ -1,0 +1,121 @@
+{% comment %}
+Description: A runbook step to export fields to Confluence or GoogleDocs to enable greater colaboration before, during or after incdient retrospectives.
+
+Runbook step: These steps can be added to the default copy of the 'Export Retrospective to Confluence' or 'Export Retrospective to Google Docs.'
+
+Conditions to trigger: 'Current Milestone is Resolved'
+
+Note: This step uses standard markdown and could be used in any markdown compatable step including the Confluence and Google Docs retrospective exports.
+
+{% endcomment %}
+
+# Retrospective: {{ retro.name }}
+
+**Incident:** [{{ incident.severity }} - {{ incident.name}}]({{ incident.incident_url }}) ({{ retro.incident_active_duration }})
+
+{{ retro.summary }}
+
+{%- if incident.customer_impact_summary != blank or retro.impacts != empty -%}
+### Impact
+{% if incident.customer_impact_summary != blank -%}
+  {{ incident.customer_impact_summary }}
+{% endif %}
+
+
+{% if retro.impacts != empty %}
+| Type | Name | Condition |
+|------|------|-----------|
+{%- for impact in retro.impacts %}
+| {{ impact.type }} | {{ impact.name }} | {{ impact.condition }} |
+{%- endfor %}
+{% endif %}
+{% endif %}
+
+
+### Milestones
+
+| Milestone | Started | Duration |
+|-----------|---------|----------|
+{%- for milestone in retro.milestones %}
+| {{ milestone.type }} | {{ milestone.occurred_at }} | {{ milestone.duration }} |
+{%- endfor %}
+
+
+{% if retro.incident_roles != empty %}
+### Responders
+
+| Role | User |
+|------|------|
+{%- for role in retro.incident_roles %}
+| {{ role.name }} | {{ role.user }} |
+{%- endfor %}
+{% endif %}
+
+
+## Analysis
+
+{% if retro.contributing_factors != empty -%}
+### Contributing Factors
+{% for factor in retro.contributing_factors %}
+- {{ factor.summary }}
+{%- endfor %}
+{%- endif %}
+
+
+{% if retro.questions != empty -%}
+### Questions
+
+{% for question in retro.questions %}
+**{{ question.title }}**
+
+{{ question.body }}
+{% endfor %}
+{% endif %}
+
+
+## Important events
+
+{% if retro.starred_events != empty %}
+{% for event in retro.starred_events %}
+_{{ event.occurred_at}}_ ({{event.created_by}})
+
+{% comment %}
+Description: Return tags, labels and jira tickets.
+
+Runbook Step:'Notify channel with a custom message' or 'Notify incident channel with a custom message' or the Export retrospective runbook steps
+
+Conditions to trigger: Milestone is 'Resolved'
+{% endcomment %}
+
+| Tags |
+|-----------|
+{%- for tag in incident.tag_list %}
+| {{ tag }} |
+{%- endfor %}
+
+| Label Key | Label Value|
+|------|------|
+{%- for label in incident.labels %}
+| {{ label[0] }} | {{ label[1] }} |
+{%- endfor %}
+
+| Ticket Name | Link|
+|------|------|
+{%- for ticket in incident.incident_tickets[0].attachments %}
+| {{ ticket.display_text }} | {{ ticket.href_url }} |
+{%- endfor %}
+
+
+{% comment %}
+Description: Return the type and duration for each milestone.
+
+Runbook Step:'Notify channel with a custom message' or 'Notify incident channel with a custom message' or the Export retrospective runbook steps
+
+Conditions to trigger: Milestone is 'Resolved'
+{% endcomment %}
+
+{% for milestone in incident.milestones %}
+  Type: {{ milestone.type }}
+  Duration: {{ milestone.duration }}
+  ####################
+{% endfor %}

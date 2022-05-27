@@ -58,3 +58,20 @@ Note: This is written in mrkdwn (slack markdown formatting) and is optimized for
     Incident {{incident.name}}-{{ incident.severity}}'s has completed it's post incident review. See <correct FH URL?>/{{incident.report_id}} <<
 
     Note: For {{incident.severity}} our <https://link-to-SLA-source-of-truth | SLA> is 48 hours.
+
+
+
+todo
+{% comment %}
+Description: Generic message update with total incident duration.
+
+Recommended Runbook Steps: Notify channel with a custom message, Notify incident channel with a custom message, or Send an email notification
+
+Conditions to Trigger: 'Current Milestone is n' or any 'Time since...' triggers
+
+Note: This is written in mrkdwn (slack markdown formatting) and is optimized for use in a slack messages.
+{% endcomment %}
+
+:rotating_light: *{{incident.channel_reference}} - {{incident.severity}} at milestone "{{incident.current_milestone}}"* has been active for {{incident.milestones.last.occurred_at | date: "%Y-%m-%d %H:%M"}} - for the past {% assign first_milestone_occured_at_sec=incident.milestones.first.occurred_at | date: "%s" %}{{ incident.milestones.last.occurred_at | date: "%s" | minus: first_milestone_occured_at_sec | divided_by: 60 | round }} min.
+
+Please check in with your escalation engineer to see if they need any additional support or to rotate out:rotating_light:

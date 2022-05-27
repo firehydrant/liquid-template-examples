@@ -12,30 +12,38 @@ Note: This is written in mrkdwn (slack markdown formatting) and is optimized for
 
 # Call Home - Notification that a responder team has been engaged to be sent to that responders 'home team' channel
 
-*Team X has been engaged in {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}*
+  *Team X has been engaged in {{incident.name}}-{{ incident.severity}}-{{incident.current_milestone}}*
 
-_Triage is taking place here: <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
+  _Triage is taking place here: <#{{incident.channel_id}}> // Follow along on the <{{incident.private_status_page_url}}|incident status page> // Check the <{{incident.incident_url}}|command center> for full details_
 
-{% comment %}
-Note, for the service and functionality objects, the only two attributes available via the incident object are `id` and `name.`
-{% endcomment %}
-*Impacted Services*
-{% for service in incident.services -%}
-  :fire: <https://app.firehydrant.io/services/{{service.id}}|{{ service.name }}>
+  {% comment %}
+  Note, for the service and functionality objects, the only two attributes available via the incident object are `id` and `name.`
+  {% endcomment %}
+  *Impacted Services*
+  {% for service in incident.services -%}
+    :fire: <https://app.firehydrant.io/services/{{service.id}}|{{ service.name }}>
+    {% else -%}
+    _No Services have been added yet ( use `/fh add impact` to add a service )_
+  {% endfor -%}
+
+  *Impacted Functionalities*
+  {% for functionality in incident.functionalities -%}
+    :fire: <https://app.firehydrant.io/functionalities{{functionality.id}}|{{ functionality.name }}>
   {% else -%}
-  _No Services have been added yet ( use `/fh add impact` to add a service )_
-{% endfor -%}
+    _No Functionalities have been added yet_ ( use `/fh add impact` to add a functionality)
+  {% endfor %}
 
-*Impacted Functionalities*
-{% for functionality in incident.functionalities -%}
-  :fire: <https://app.firehydrant.io/functionalities{{functionality.id}}|{{ functionality.name }}>
-{% else -%}
-  _No Functionalities have been added yet_ ( use `/fh add impact` to add a functionality)
+# Team Status update - Notify a responding groups 'home team' channel with an update on incident status.
+
+{% for milestone in incident.milestones %}
+  Type: {{ milestone.type }}
+  Duration: {{ milestone.duration }}
+  ####################
 {% endfor %}
 
-# Team Status update - Notify 'home team' channel with an update on incident status. << todo test from here down, this already lives in my test instance in 'Team X Runbok'
+incident.milestones.size
+:alert: Reminder - {{incident.name}} - {{incident.severity}} has been at milestone {{incident.current_milestone}} since {{incident.milestones[size].occurred_at | date: "%Y-%m-%d %H:%M" | append: " - for " | append: incident.milestones[size].duration | remove: "PT" }}
 
-:alert: Reminder - {{incident.name}} - {{incident.severity}} at milestone {{incident. current_milestone}} has been ongoing for {{ "now" | minus: incident.created_at}}
 
 Please check in with your escalation engineer to see if they need any additional support or to rotate out.
 

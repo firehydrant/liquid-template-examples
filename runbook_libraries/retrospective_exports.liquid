@@ -102,7 +102,7 @@ Conditions to trigger: Milestone is 'Resolved'
 | Ticket Name | Link|
 |------|------|
 {%- for ticket in incident.incident_tickets[0].attachments %}
-| {{ ticket.display_text }} | {{ ticket.href_url }} |
+| {{ ticket.display_text }} | [{{ ticket.display_text }}]({{ ticket.href_url }})  |
 {%- endfor %}
 
 

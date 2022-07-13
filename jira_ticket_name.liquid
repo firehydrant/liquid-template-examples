@@ -1,0 +1,36 @@
+{% comment %}
+Description: Liquid templating to fetch the name of the Jira ticket to use. Often used to name e.g. Slack channel, custom notifications, etc. As of right now, the actual name of the Jira ticket is as the `display_text` property in the attachments of a ticket.
+
+Runbook Step: Any requiring the name of the Jira ticket.
+
+Conditions to trigger: Make sure whichever step you're using this template in is set to "When previous runbook step is completed" and that previous runbook step is Jira ticket creation. This won't work if the ticket hasn't been created yet.
+
+To see more available variables visit our docs[0].
+
+[0]https://support.firehydrant.com/hc/en-us/articles/4409136426004-Using-template-variables-in-Runbooks
+{% endcomment %}
+
+{% comment %}
+This first entry is the simplest and cleanest. However, it's brittle because it assumes 2 things:
+1) That the incident ticket will always be the first ticket. This is true for now but may or may
+not change due to unforeseen reasons in the future.
+2) That there is only one attachment, which is the URL to the Jira ticket. Similarly, it's true
+for now, but may not always be the case.
+{% endcomment %}
+{%- for attachment in incident.incident_tickets[0].attachments %}
+  {{ attachment.display_text }}
+{%- endfor %}
+
+{% comment %}
+This 2nd entry is a lot more robust with checks, with the caveat being that it's a lot of template
+code and can be a bit cumbersome to use.
+{% endcomment %}
+{%- for ticket in incident.incident_tickets %}
+  {%- if ticket.type == "incident" %}
+    {%- for attachment in ticket.attachments %}
+      {%- if attachment.type == "link" %}
+        {{ attachment.display_text }}
+      {%- endif %}
+    {%- endfor %}
+  {%- endif %}
+{%- endfor %}

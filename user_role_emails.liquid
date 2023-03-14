@@ -1,0 +1,19 @@
+{% comment %}
+Description: Liquid templating to fetch the details of users assigned to a specific role.
+
+Runbook Step: Any requiring the name & email for users assigned to a role
+
+Conditions to trigger: N/A
+
+To see more available variables visit our docs[0].
+
+[0]https://support.firehydrant.com/hc/en-us/articles/4409136426004-Using-template-variables-in-Runbooks
+{% endcomment %}
+
+{% comment %}
+Iterates through all of the roles assigned and prints out `{Role}: {Name} <{Email}>`
+{% endcomment %}
+{% for role in incident.role_assignments -%}
+  **{{ role.incident_role.name }}**: {{ role.user.name }} \<{{ role.user.email }}\>
+{% endfor %}
+

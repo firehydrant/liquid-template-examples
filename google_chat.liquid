@@ -1,0 +1,118 @@
+{% comment %}
+Description: JSON payload + liquid templating to post a complete incident card into a Google Chat Space.
+
+Runbook Step: Send a webhook
+
+Conditions to trigger: We'd advise putting this somewhere near the end of all the steps that run at the start of an incident and then setting a dependency on the previous step(s) to complete.
+
+To see more available variables visit our docs[0].
+
+[0]https://support.firehydrant.com/hc/en-us/articles/4409136426004-Using-template-variables-in-Runbooks
+
+Limitations: This is NOT a complete Google Chat integration, but a one-way post at one moment in time. Any updates to FireHydrant incidents would post in new messages/threads and not existing ones, and any replies or other updates from Google Chat side would not reflect into FireHydrant.
+{% endcomment %}
+
+{
+  "cardsV2": [
+    {
+      "cardId": "firehydrant-incident-{{ incident.id }}",
+      "card": {
+        "header": {
+          "title": "[{{ incident.severity }}] {{ incident.name }}",
+          "subtitle": "{{ incident.severity }} incident opened on FireHydrant",
+          "imageUrl": "https://lh4.googleusercontent.com/proxy/jYDq4e-9OD7aj741TTIdcC8kY_GdEeFXDLjQn_iv_fAQtjl5he1ZSyQMKkYCLLTaXvFbBcbc7ek94CjgbNyukzVpvpDuAOjDJI2HoPRtuXMlCFqhM-HOWvSR9-nkdDxfiQ",
+          "imageType": "CIRCLE",
+          "imageAltText": "FireHydrant logo"
+        },
+        "sections": [
+          {
+            "header": "Incident Details",
+            "widgets": [
+              {
+                "decoratedText": {
+                  "startIcon": {
+                    "knownIcon": "DESCRIPTION"
+                  },
+                  "text": "{{ incident.description }}",
+                  "wrapText": true
+                }
+              },
+              {
+                "decoratedText": {
+                  "startIcon": {
+                    "iconUrl": "https://cdn.pixabay.com/photo/2012/04/12/22/25/warning-sign-30915__480.png"
+                  },
+                  "text": "{{ incident.severity }}"
+                }
+              },
+             {
+                "decoratedText": {
+                  "startIcon": {
+                    "knownIcon": "MULTIPLE_PEOPLE"
+                  },
+                  "text": "{% for role in incident.role_assignments -%} <b>{{ role.incident_role.name }}</b>: {{ role.user.name }} <{{ role.user.email }}><br/> {% endfor %}<b>Reported by: </b>{{ incident.created_by.name }} <{{ incident.created_by.email }}>"
+                }
+              },
+              {
+                "decoratedText": {
+                  "startIcon": {
+                    "knownIcon": "HOTEL_ROOM_TYPE"
+                  },
+                  "text": "{% for infra in incident.impacts -%} <b>{{ infra.type }}</b>: {{ infra.impact.name }} ({{ infra.condition.name }})<br/> {% endfor %}"
+                }
+              }
+            ]
+          },
+          {
+            "header": "Links",
+            "widgets": [
+              {
+                "decoratedText": {
+                  "startIcon": {
+                    "iconUrl": "https://user-images.githubusercontent.com/5147537/54070671-0a173780-4263-11e9-8946-09ac0e37d8c6.png"
+                  },
+                  "text": "<a href=&quot;https://[YOUR_WORKSPACE].slack.com/archives/{{ incident.channel_id }}&quot;>#{{ incident.channel_name }}</a>"
+                }
+              },
+              {
+                "decoratedText": {
+                  "startIcon": {
+                    "knownIcon": "VIDEO_CAMERA"
+                  },
+                  "text": "<a href=&quot;{{ incident.conference_bridges[0].attachments[0].href_url }}&quot;>Google Meeting</a>"
+                }
+              }
+            ]
+          },
+          {
+            "widgets": [
+              {
+                "buttonList": {
+                  "buttons": [
+                    {
+                      "text": "Open in FireHydrant",
+                      "onClick": {
+                        "openLink": {
+                          "url": "{{ incident.incident_url }}"
+                        }
+                      }
+                    },
+                    {
+                      "text": "Internal Status Page",
+                      "onClick": {
+                        "openLink": {
+                          "url": "{{ incident.private_status_page_url }}"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+

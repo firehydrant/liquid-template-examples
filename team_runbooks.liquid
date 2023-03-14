@@ -25,7 +25,7 @@ Note, for the service and functionality objects, the only two attributes availab
 
 *Impacted Functionalities*
 {% for functionality in incident.functionalities -%}
-  :fire: <https://app.firehydrant.io/functionalities{{functionality.id}}|{{ functionality.name }}>
+  :fire: <https://app.firehydrant.io/functionalities/{{functionality.id}}|{{ functionality.name }}>
 {% else -%}
   _No Functionalities have been added yet_ ( use `/fh add impact` to add a functionality)
 {% endfor %}

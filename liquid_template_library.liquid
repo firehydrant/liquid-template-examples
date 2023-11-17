@@ -1,0 +1,155 @@
+{% comment %}
+Description: Library of commonly requested liquid templating snippets
+{% endcomment %}
+
+{% comment %}
+Incident Channels
+{% endcomment %}
+{% for channel in incident.incident_channels %}
+Channel Name: {{ channel.name }}
+URL: {{ channel.url }}
+{% endfor %}
+
+{% comment %}
+Milestones
+{% endcomment %}
+{% for milestone in incident.milestones %}
+Milestone: {{ milestone.type }}
+Occurred At: {{ milestone.occurred_at }}
+Duration: {{ milestone.duration }}
+{% endfor %}
+
+{% comment %}
+Communication Bridge
+{% endcomment %}
+{% for conference_bridge in incident.conference_bridges %}
+{% for attachment in conference_bridge.attachments %}
+{% if attachment.type == 'link' %}
+{{ attachment.href_url }}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% comment %}
+Role Assignments
+{% endcomment %}
+{% for role_assignment in incident.role_assignments %}
+Role: {{ role_assignment.incident_role.name }}
+Assigned to: {{ role_assignment.user.name }} ({{ role_assignment.user.email }})
+{% endfor %}
+
+{% comment %}
+Specific User Role Data
+{% endcomment %}
+{% for role_assignment in incident.role_assignments %}
+{% if role_assignment.incident_role.name == 'Commander' %}
+Commander: {{ role_assignment.user.name }}
+{% endif %}
+{% endfor %}
+
+{% comment %}
+Full Responder Data
+{% endcomment %}
+{% for role_assignment in incident.role_assignments %}
+{% if role_assignment.incident_role.name == 'Commander' %}
+Commander: {{ role_assignment.user.name }}
+Email: {{ role_assignment.user.email }}
+Role ID: {{ role_assignment.incident_role.id }}
+Role Summary: {{ role_assignment.incident_role.summary }}
+Role Description: {{ role_assignment.incident_role.description }}
+Role Created At: {{ role_assignment.incident_role.created_at }}
+Role Updated At: {{ role_assignment.incident_role.updated_at }}
+User ID: {{ role_assignment.user.id }}
+{% if role_assignment.user.slack_user_id %}
+Slack User ID: {{ role_assignment.user.slack_user_id }}
+{% endif %}
+{% if role_assignment.user.slack_linked? %}
+Slack Linked: Yes
+{% else %}
+Slack Linked: No
+{% endif %}
+User Created At: {{ role_assignment.user.created_at }}
+User Updated At: {{ role_assignment.user.updated_at }}
+Assignment Status: {{ role_assignment.status }}
+Assignment Created At: {{ role_assignment.created_at }}
+Assignment Updated At: {{ role_assignment.updated_at }}
+{% endif %}
+{% endfor %}
+
+{% comment %}
+Team Assignments
+{% endcomment %}
+{% for team_assignment in incident.team_assignments %}
+Team: {{ team_assignment.team.name }}
+Description: {{ team_assignment.team.description }}
+{% endfor %}
+
+{% comment %}
+Impacted Functionalities
+{% endcomment %}
+{% for impact in incident.impacts %}
+{% if impact.type == 'functionality' %}
+Functionality Name: {{ impact.impact.name }}
+Condition: {{ impact.condition.name }}
+{% endif %}
+{% endfor %}
+
+{% comment %}
+Impacted Services
+{% endcomment %}
+{% for impact in incident.impacts %}
+{% if impact.type == 'service' %}
+Service Name: {{ impact.impact.name }}
+Condition: {{ impact.condition.name }}
+{% endif %}
+{% endfor %}
+
+{% comment %}
+Impacted Environments
+{% endcomment %}
+{% for impact in incident.impacts %}
+{% if impact.type == 'environment' %}
+Environment Name: {{ impact.impact.name }}
+Condition: {{ impact.condition.name }}
+{% endif %}
+{% endfor %}
+
+{% comment %}
+Status Page URL
+{% endcomment %}
+{% for status_page in incident.status_pages %}
+Status Page: {{ status_page.name }}
+URL: {{ status_page.url }}
+{% endfor %}
+
+{% comment %}
+Jira Ticket Name and URL
+{% endcomment %}
+{% for ticket in incident.incident_tickets %}
+Ticket Name: {{ ticket.summary }}
+Ticket URL: {{ ticket.link.href_url }}
+{% endfor %}
+
+{% comment %}
+Labels
+{% endcomment %}
+{%- for label in incident.labels %}
+{{ label[0] }}:{{ label[1] }}
+{%- endfor %}
+
+{% comment %}
+Calculation for Due Date
+{% endcomment %}
+{% assign mitigated_milestone_occurred_at = nil %}
+{% for milestone in incident.milestones %}
+    {% if milestone.type == 'mitigated' %}
+        {% assign mitigated_milestone_occurred_at = milestone.occurred_at %}
+    {% endif %}
+{% endfor %}
+
+{% assign days_to_add = 7 %} 
+{% assign seconds_to_add = days_to_add | times: 86400 %} 
+{% assign new_due_date_timestamp = mitigated_milestone_occurred_at | date: "%s" | plus: seconds_to_add %}
+{% assign formatted_due_date = new_due_date_timestamp | date: "%Y-%m-%d" %} 
+
+{{ formatted_due_date }}
